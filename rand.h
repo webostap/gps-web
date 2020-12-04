@@ -1,5 +1,7 @@
 #pragma once
 
+typedef unsigned long long ul; 
+
 inline int int_len(int a) {
     int len = 0;
     do ++len; while (a /= 10);
@@ -15,11 +17,11 @@ inline long long pow(int a, int b) {
 class Gen {
 public:
 
-    Gen(int _seed) : seed(_seed) {};
+    Gen(int _seed) : seed(_seed) {}
     virtual double next() = 0;
 
 protected:
-    unsigned long long seed, mod = 0;
+    ul seed, mod = 0;
 };
 
 class GenClassic : public Gen {
@@ -27,17 +29,17 @@ public:
     GenClassic(int _seed) : Gen(_seed) {}
 
 protected:
-    unsigned long long depth = int_len(seed);
-    unsigned long long mod = pow(10, depth);
-    unsigned long long div = pow(10, depth / 2);
+    ul depth = int_len(seed);
+    ul mod = pow(10, depth);
+    ul div = pow(10, depth / 2);
 };
 
 class MidSquare : public GenClassic {
 
 public:
-    MidSquare(int _seed) : GenClassic(_seed) {};
+    MidSquare(int _seed) : GenClassic(_seed) {}
 
-    double next() {
+    double next() override {
         seed = seed * seed / div % mod;
         return static_cast<double>(seed) / mod;
     }
@@ -46,12 +48,12 @@ public:
 class MidMulti : public GenClassic {
 
 private:
-    unsigned long long last = seed, tmp = seed;
+    ul last = seed, tmp = seed;
 
 public:
-    MidMulti(int _seed) : GenClassic(_seed) {};
+    MidMulti(int _seed) : GenClassic(_seed) {}
 
-    double next() {
+    double next() override {
         tmp = seed;
         seed = last * seed / div % mod;
         last = tmp;
@@ -62,19 +64,19 @@ public:
 class MixSum : public GenClassic {
 
 private:
-    unsigned long long div = pow(10, depth / 4);
-    unsigned long long cut = mod / div;
+    ul div = pow(10, depth / 4);
+    ul cut = mod / div;
 
 public:
-    MixSum(int _seed) : GenClassic(_seed) {};
+    MixSum(int _seed) : GenClassic(_seed) {}
 
-    double next() {
-        unsigned long long beg = seed / div;
-        unsigned long long end = seed % cut;
-        unsigned long long left = seed / cut;
-        unsigned long long right = seed % div;
-        unsigned long long a = right * cut + beg;
-        unsigned long long b = end * div + left;
+    double next() override {
+        ul beg = seed / div;
+        ul end = seed % cut;
+        ul left = seed / cut;
+        ul right = seed % div;
+        ul a = right * cut + beg;
+        ul b = end * div + left;
         seed = (a + b) % mod;
         return static_cast<double>(seed) / mod;
     }
@@ -82,12 +84,12 @@ public:
 class LCG : public Gen {
 
 private:
-    unsigned long long mod = (pow(2, 31) - 1), a = 16807, c = 0;
+    ul mod = (pow(2, 31) - 1), a = 16807, c = 0;
 
 public:
-    LCG(int _seed) : Gen(_seed) {};
+    LCG(int _seed) : Gen(_seed) {}
 
-    double next() {
+    double next() override {
         seed = (a * seed + c) % mod;
         return static_cast<double>(seed) / mod;
     }
