@@ -7,7 +7,7 @@ inline int int_len(int a) {
     do ++len; while (a /= 10);
     return len;
 }
-inline long long pow(int a, int b) {
+inline long long int_pow(int a, int b) {
     int c = 1;
     for (int i = 0; i < b; i++)
         c*= a;
@@ -30,8 +30,8 @@ public:
 
 protected:
     ul depth = int_len(seed);
-    ul mod = pow(10, depth);
-    ul div = pow(10, depth / 2);
+    ul mod = int_pow(10, depth);
+    ul div = int_pow(10, depth / 2);
 };
 
 class MidSquare : public GenClassic {
@@ -64,7 +64,7 @@ public:
 class MixSum : public GenClassic {
 
 private:
-    ul div = pow(10, depth / 4);
+    ul div = int_pow(10, depth / 4);
     ul cut = mod / div;
 
 public:
@@ -84,7 +84,7 @@ public:
 class LCG : public Gen {
 
 private:
-    ul mod = (pow(2, 31) - 1), a = 16807, c = 0;
+    ul mod = (int_pow(2, 31) - 1), a = 16807, c = 0;
 
 public:
     LCG(int _seed) : Gen(_seed) {}
